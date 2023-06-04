@@ -240,9 +240,18 @@ function getRectangleString(width, height) {
 function encodeToRot13(str) {
   let res = '';
   for (let i = 0; i < str.length; i += 1) {
-    const newSym = str.charCodeAt(i) + 13 < 123
-      ? str.charCodeAt(i) + 13
-      : ((str.charCodeAt(i) + 13) % 122) + 96;
+    let newSym = '';
+    if (str.charCodeAt(i) > 96 && str.charCodeAt(i) < 123) {
+      newSym = str.charCodeAt(i) + 13 < 123
+        ? str.charCodeAt(i) + 13
+        : (((str.charCodeAt(i) + 13) % 122) + 96);
+    } else if (str.charCodeAt(i) > 64 && str.charCodeAt(i) < 91) {
+      newSym = str.charCodeAt(i) + 13 < 91
+        ? str.charCodeAt(i) + 13
+        : ((str.charCodeAt(i) + 13) % 90) + 64;
+    } else {
+      newSym = str.charCodeAt(i);
+    }
     res += String.fromCharCode(newSym);
   }
   return res;
@@ -261,8 +270,8 @@ function encodeToRot13(str) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
 }
 
 
@@ -290,8 +299,24 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const el = value.split('');
+  let res = 0;
+  switch (el[0]) {
+    case 'A': res += 1; break;
+    case 'J': res += 11; break;
+    case 'Q': res += 12; break;
+    case 'K': res += 13; break;
+    case '1': res += 10; break;
+    default: res += (el[0] * 1); break;
+  }
+  switch (el[el.length - 1]) {
+    case '♣': res += 13 * 0; break;
+    case '♦': res += 13 * 1; break;
+    case '♥': res += 13 * 2; break;
+    default: res += 13 * 3; break;
+  }
+  return res - 1;
 }
 
 
