@@ -127,7 +127,7 @@ class Selector {
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
       );
     }
-    if (lvl === 0 || lvl === 1 || lvl === 5) {
+    if ([0, 1, 5].includes(lvl)) {
       if (this.lvlElement === lvl) {
         throw new Error(
           'Element, id and pseudo-element should not occur more then one time inside the selector',
